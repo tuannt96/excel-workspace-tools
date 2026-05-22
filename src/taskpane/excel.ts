@@ -16,19 +16,25 @@ Office.onReady((info) => {
 export async function runExcel() {
   try {
     await Excel.run(async (context) => {
-      /**
-       * Insert your Excel code here
-       */
       const range = context.workbook.getSelectedRange();
 
-      // Read the range address
-      range.load("address");
+      range.format.fill.color = "#EAF4FF";
+      range.format.font.color = "#1F2937";
+      range.format.font.name = "Aptos";
+      range.format.font.size = 11;
 
-      // Update the fill color
-      range.format.fill.color = "yellow";
+      range.format.borders.getItem("EdgeTop").style = Excel.BorderLineStyle.continuous;
+      range.format.borders.getItem("EdgeBottom").style = Excel.BorderLineStyle.continuous;
+      range.format.borders.getItem("EdgeLeft").style = Excel.BorderLineStyle.continuous;
+      range.format.borders.getItem("EdgeRight").style = Excel.BorderLineStyle.continuous;
+      range.format.borders.getItem("InsideHorizontal").style = Excel.BorderLineStyle.continuous;
+      range.format.borders.getItem("InsideVertical").style = Excel.BorderLineStyle.continuous;
+
+      range.format.autofitColumns();
+      range.format.autofitRows();
 
       await context.sync();
-      console.log(`The range address was ${range.address}.`);
+      console.log("Selected range formatted successfully.");
     });
   } catch (error) {
     console.error(error);
