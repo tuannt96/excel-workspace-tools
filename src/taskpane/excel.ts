@@ -16,25 +16,38 @@ Office.onReady((info) => {
 export async function runExcel() {
   try {
     await Excel.run(async (context) => {
+      // Lấy vùng đang được chọn
       const range = context.workbook.getSelectedRange();
 
-      range.format.fill.color = "#EAF4FF";
-      range.format.font.color = "#1F2937";
-      range.format.font.name = "Aptos";
-      range.format.font.size = 11;
-
-      range.format.borders.getItem("EdgeTop").style = Excel.BorderLineStyle.continuous;
-      range.format.borders.getItem("EdgeBottom").style = Excel.BorderLineStyle.continuous;
-      range.format.borders.getItem("EdgeLeft").style = Excel.BorderLineStyle.continuous;
-      range.format.borders.getItem("EdgeRight").style = Excel.BorderLineStyle.continuous;
-      range.format.borders.getItem("InsideHorizontal").style = Excel.BorderLineStyle.continuous;
-      range.format.borders.getItem("InsideVertical").style = Excel.BorderLineStyle.continuous;
-
-      range.format.autofitColumns();
-      range.format.autofitRows();
+      // Đọc dữ liệu trong vùng chọn
+      range.load(["values", "rowCount", "columnCount"]);
 
       await context.sync();
-      console.log("Selected range formatted successfully.");
+
+      const values = range.values;
+      let emptyCellCount = 0;
+
+      // Duyệt từng ô trong vùng chọn
+      for (let r = 0; r < range.rowCount; r++) {
+        for (let c = 0; c < range.columnCount; c++) {
+          const cell = range.getCell(r, c);
+          const value = values[r][c];
+
+          // Nếu ô rỗng hoặc chỉ chứa khoảng trắng
+          if (
+            value === null ||
+            value === "" ||
+            (typeof value === "string" && value.trim() === "")
+          ) {
+            cell.format.fill.color = "#FDE7E9";
+            emptyCellCount++;
+          }
+        }
+      }
+
+      await context.sync();
+
+      console.log(`Highlighted ${emptyCellCount} empty cell(s).`);
     });
   } catch (error) {
     console.error(error);
