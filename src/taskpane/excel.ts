@@ -19,35 +19,15 @@ export async function runExcel() {
       // Lấy vùng đang được chọn
       const range = context.workbook.getSelectedRange();
 
-      // Đọc dữ liệu trong vùng chọn
-      range.load(["values", "rowCount", "columnCount"]);
+      // Tự động điều chỉnh độ rộng các cột
+      range.format.autofitColumns();
+
+      // Tự động điều chỉnh chiều cao các hàng
+      range.format.autofitRows();
 
       await context.sync();
 
-      const values = range.values;
-      let emptyCellCount = 0;
-
-      // Duyệt từng ô trong vùng chọn
-      for (let r = 0; r < range.rowCount; r++) {
-        for (let c = 0; c < range.columnCount; c++) {
-          const cell = range.getCell(r, c);
-          const value = values[r][c];
-
-          // Nếu ô rỗng hoặc chỉ chứa khoảng trắng
-          if (
-            value === null ||
-            value === "" ||
-            (typeof value === "string" && value.trim() === "")
-          ) {
-            cell.format.fill.color = "#FDE7E9";
-            emptyCellCount++;
-          }
-        }
-      }
-
-      await context.sync();
-
-      console.log(`Highlighted ${emptyCellCount} empty cell(s).`);
+      console.log("Selected range has been automatically resized.");
     });
   } catch (error) {
     console.error(error);
