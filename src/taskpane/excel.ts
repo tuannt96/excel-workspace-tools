@@ -1,6 +1,6 @@
 /*
- * Copyright (c) Microsoft Corporation.
- * Licensed under the MIT license.
+ * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
+ * See LICENSE in the project root for license information.
  */
 
 /* global console, document, Excel, Office */
@@ -9,7 +9,6 @@ Office.onReady((info) => {
   if (info.host === Office.HostType.Excel) {
     document.getElementById("sideload-msg").style.display = "none";
     document.getElementById("app-body").style.display = "flex";
-
     document.querySelector("#run").onclick = runExcel;
   }
 });
@@ -20,22 +19,18 @@ export async function runExcel() {
       // Lấy vùng đang được chọn
       const range = context.workbook.getSelectedRange();
 
-      // Lấy giá trị của các ô
-      range.load("values");
+      // Tự động điều chỉnh độ rộng các cột
+      range.format.autofitColumns();
+
+      // Tự động điều chỉnh chiều cao các hàng
+      range.format.autofitRows();
+
+      // Đổi màu chữ thành đỏ
+      range.format.font.color = "#FF0000";
 
       await context.sync();
 
-      // Chuyển các giá trị dạng chuỗi thành chữ in hoa
-      const newValues = range.values.map((row) =>
-        row.map((value) => (typeof value === "string" ? value.toUpperCase() : value))
-      );
-
-      // Ghi lại dữ liệu đã chuyển đổi
-      range.values = newValues;
-
-      await context.sync();
-
-      console.log("Selected range converted to uppercase.");
+      console.log("Selected range has been resized and font color changed.");
     });
   } catch (error) {
     console.error(error);
