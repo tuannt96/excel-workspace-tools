@@ -25,12 +25,12 @@ export async function runExcel() {
       // Tự động điều chỉnh chiều cao các hàng
       range.format.autofitRows();
 
-      // Đổi màu chữ thành đỏ
-      range.format.font.color = "#FF0000";
+      // Tô màu nền vàng
+      range.format.fill.color = "#FFFF00";
 
       await context.sync();
 
-      console.log("Selected range has been resized and font color changed.");
+      console.log("Selected range has been resized and highlighted.");
     });
   } catch (error) {
     console.error(error);
